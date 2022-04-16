@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>普通Marker</title>
+    <link rel="preload" href="//at.alicdn.com/t/font_3261774_cofpxuzgesk.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  </head>
+  <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"></script>
+  <style type="text/css">
+    html,
+
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;overflow: hidden;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+    }
+
+    .btnContainer {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      z-index: 10000;
+    }
+
+    .btnContainer button {
+      padding: 10px 14px;
+      box-sizing: border-box;
+      border: none;
+      background-color: hsl(0, 0%, 100%);
+      border-radius: 5px;
+      color: rgb(10, 9, 9);
+      font-size: 14px;
+      line-height: 14px;
+      margin-bottom: 10px;
+      -webkit-transition-duration: 0.5s;
+      transition-duration: 0.5s;
+    }
+    .btnContainer button:hover {
+      padding: 10px 14px;
+      box-sizing: border-box;
+      border: none;
+      background-color: #3876ff;
+      border-radius: 2px;
+      color: #fff;
+      font-size: 14px;
+      line-height: 14px;
+      margin-bottom: 10px;
+    }
+    .btnContainer button:focus{outline:0;} 
+
+  </style>
+
+  <body>
+    <div style="border:#ccc solid 1px;" id="container">
+      <div class="btnContainer">
+        <button class="btn1">显示高度</button>
+        <button class="btn2">平面显示</button>
+        <div type="button" id="setcenter" onclick="setCenter()">
+          <svg t="1647763535730" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="819" width="30" height="30">
+            <path d="M512 902.4a390.4 390.4 0 1 1 0-780.8 390.4 390.4 0 0 1 0 780.8z m0-64a326.4 326.4 0 1 0 0-652.8 326.4 326.4 0 0 0 0 652.8z" fill="#13227a" p-id="820"></path>
+            <path d="M870.4 544a32 32 0 1 1 0-64h102.4a32 32 0 1 1 0 64h-102.4z" fill="#13227a" p-id="821"></path>
+            <path d="M512 512m-204.8 0a204.8 204.8 0 1 0 409.6 0 204.8 204.8 0 1 0-409.6 0Z" fill="#13227a" p-id="822"></path>
+            <path d="M544 153.6a32 32 0 1 1-64 0V51.2a32 32 0 1 1 64 0v102.4zM480 870.4a32 32 0 1 1 64 0v102.4a32 32 0 1 1-64 0v-102.4zM153.6 480a32 32 0 1 1 0 64H51.2a32 32 0 1 1 0-64h102.4z" fill="#13227a" p-id="823"></path>
+          </svg>
+        </div>
+      </div>
+    </div>  
+    
+    <script type="text/javascript">
+      var center = new TMap.LatLng(31.771519, 117.205399);
+      var centerHeight = new TMap.LatLng(31.771519, 117.205399, 60);
+
+      // 初始化地图
+      var map = new TMap.Map('container', {
+        zoom: 15, // 设置地图缩放
+        center: new TMap.LatLng(31.771519, 117.205399), // 设置地图中心点坐标，
+        pitch: 0, // 俯仰度
+        rotation: 0, // 旋转角度
+      });
+
+      // 获取缩放控件实例，设置缩放值可见
+      control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
+      control.setNumVisible(true);
+
+      function setCenter() {
+            map.setCenter(new TMap.LatLng(31.771519, 117.205399));//坐标为默认值
+        }
+
+      // MultiMarker文档地址：https://lbs.qq.com/webApi/javascriptGL/glDoc/glDocMarker
+      var marker = new TMap.MultiMarker({
+        map: map,
+        styles: {
+          // 点标记样式
+          marker: new TMap.MarkerStyle({
+            width: 20, // 样式宽
+            height: 30, // 样式高
+            anchor: { x: 10, y: 30 }, // 描点位置
+          }),
+        },
+        geometries: [
+          // 点标记数据数组
+          {
+            // 标记位置(纬度，经度，高度)
+            position: center,
+            id: 'marker',
+          },
+        ],
+      });
+
+      document.querySelector('button.btn1').onclick = function () {
+        var data = marker.getGeometryById('marker');
+        Object.assign(data, {
+          position: centerHeight,
+        });
+        marker.updateGeometries([data]);
+        map.easeTo(
+          {
+            pitch: 80,
+            zoom: 17,
+            rotation: -30, // 旋转角度
+          },
+          600
+        );
+      };
+      document.querySelector('button.btn2').onclick = function () {
+        var data = marker.getGeometryById('marker');
+        Object.assign(data, {
+          position: center,
+        });
+        marker.updateGeometries([data]);
+        map.easeTo(
+          {
+            pitch: 0,
+            zoom: 16,
+            rotation: 0, // 旋转角度
+          },
+          600
+        );
+      };
+    </script>
+  </body>
+</html>
